@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import TaskList from './TaskList';
+import store from './todoStore';
+
 import {
   StackNavigator,
 } from 'react-navigation';
@@ -13,14 +15,20 @@ export default class MainFormScreen extends React.Component {
   
     constructor(props, context) {
       super(props, context);
-      this.state = {
-        todos: []
-      };
+      this.state = store.getState();
+
+      store.subscribe(() => {
+        this.setState(store.getState()); //eslint-disable-line react/no-set-state
+      });
     }
   
     onAddTask = function(task) {
-      this.state.todos.push({task});
-      this.setState({todos: this.state.todos})
+      // this.state.todos.push({task});
+      // this.setState({todos: this.state.todos});
+      store.dispatch({
+        type: 'ADD_TODO',
+        task, 
+      });
       this.props.navigation.goBack(null)
     }
   
@@ -38,12 +46,10 @@ export default class MainFormScreen extends React.Component {
   
     onDone(todo) {
       console.log('todo was completed: ', todo.task)
-      const filteredTodos = 
-        this.state.todos.filter((filterTodo)=>{
-          return filterTodo !== todo;
-        });
-      console.log(filteredTodos)
-      this.setState({ todos: filteredTodos });
+      store.dispatch({
+        type: 'DONE_TODO',
+        todo,
+      })
     }
   
     // refresh(){
