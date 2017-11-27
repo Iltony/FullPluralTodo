@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import Native, { View, ListView, StyleSheet, TouchableHighlight, Text } from 'react-native';
+import Native, { View, ListView, StyleSheet, TouchableHighlight, Text, Switch } from 'react-native';
 import PropTypes from 'prop-types';
 import TaskRow from './TaskRow/Component'
 
@@ -25,6 +25,17 @@ const styles = Native.StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
     },
+    toggleRow: {
+        flexDirection: 'row',
+        padding: 10
+    },
+    toggleText: {
+        fontSize: 20,
+        paddingLeft: 10,
+        paddingTop: 3,
+    },
+    switch: {
+    },
 });
 
 class TaskList extends React.Component {
@@ -33,8 +44,8 @@ class TaskList extends React.Component {
         super(props, context);
 
         const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-                
-        this.state = {dataSource: ds.cloneWithRows(this.props.todos)}
+
+        this.state = { dataSource: ds.cloneWithRows(this.props.todos) }
     }
 
     _onDataArrived(nextProps) {
@@ -53,9 +64,9 @@ class TaskList extends React.Component {
 
     renderRow(todo) {
         return (
-            <TaskRow 
+            <TaskRow
                 todo={todo}
-                onDone={this.props.onDone} 
+                onDone={this.props.onDone}
             />
         );
     }
@@ -63,6 +74,20 @@ class TaskList extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                <View
+                    style={styles.toggleRow}>
+                    <Switch
+                        style={styles.switch}
+                        value={this.props.filter !== 'pending'} 
+                        onValueChange={this.props.onToggle}
+                        />
+
+                    <Text
+                        style={styles.toggleText}>
+                        Showing {this.props.todos.length} {this.props.filter} todo(s)
+                </Text>
+
+                </View>
                 <ListView
                     enableEmptySections={true}
                     dataSource={this.state.dataSource}
@@ -83,6 +108,8 @@ class TaskList extends React.Component {
 
 
 TaskList.propTypes = {
+    filter: PropTypes.string.isRequired,
+    onToggle: PropTypes.func.isRequired, 
     onAddStarted: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired,
     todos: PropTypes.arrayOf(PropTypes.object).isRequired,

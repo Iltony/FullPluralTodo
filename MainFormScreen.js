@@ -52,6 +52,12 @@ export default class MainFormScreen extends React.Component {
       })
     }
   
+    onToggle(){
+      store.dispatch({
+        type:'TOGGLE_STATE',
+      })
+    }
+
     // refresh(){
     //   this.setState(this.state);
     // }
@@ -61,7 +67,9 @@ export default class MainFormScreen extends React.Component {
         <TaskList
           onAddStarted={this.onAddStarted.bind(this)}
           onDone={this.onDone.bind(this)}
+          onToggle={this.onToggle.bind(this)}
           todos={this.state.todos}
+          filter={this.state.filter}
         />
       );
     }
